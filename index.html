@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Angular CRUD</title>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+	<script type="text/javascript">
+		var app = angular.module('myApp', []);
+		app.controller('myController', function($scope, $timeout){
+			$scope.users = [
+				{'name':"Bakul Sinha", 'email':"bakul@mail.com", 'mobile': "1234567"},
+				{'name':"Bakul2 Sinha2", 'email':"bakul2@mail.com", 'mobile': "1234567"},
+				{'name':"Bakul2 Sinha2", 'email':"bakul3@mail.com", 'mobile': "1234567"}
+			];
+
+			// single user object for add form
+			$scope.user = {};
+
+			// show add from 
+			$scope.showAddForm =  function(){	
+				$scope.user = {};
+				$timeout(function(){
+					$scope.AddForm.name.$invalid = false;
+					 $scope.AddForm.email.$invalid = false;
+					 $scope.AddForm.mobile.$invalid = false;
+				},100);	 
+				 
+			}
+
+			// save new user
+			$scope.AddNewUser = function(newUser){
+				$scope.users.push(newUser);					
+			}
+
+			// edited user details to show in editing form
+			$scope.EditUser = function(editedUser){
+				$scope.editedUser = editedUser;
+			}
+
+			// nothing to do to updating the user
+			$scope.SaveUser = function(editedUser){
+
+			}
+
+			// deleting the user
+			$scope.deleteUser = function(user){
+				if(confirm("Are you sure to Delete?")){
+					$scope.users.splice($scope.users.indexOf(user), 1);
+				}else{
+					return false;
+				}
+			}
+
+
+		});
+	</script>
+</head>
+<body ng-app="myApp">
+
+<div class="container" ng-controller="myController">
+	<h1 class="text-center">Welcome to angularjs CRUD project</h1>
+	<table class="table">
+		<tr>
+			<td>Name</td>
+			<td>Email</td>
+			<td>Mobile</td>
+			<td>Action
+			<button class="btn btn-primary pull-right" data-toggle="modal" ng-click="showAddForm()" data-target="#AddModal">Add</button>
+			</td>
+		</tr>
+		<tr ng-repeat="user in users">
+			<td>{{user.name}}</td>
+			<td>{{user.email}}</td>
+			<td>{{user.mobile}}</td>
+			<td>
+				<button class="btn btn-primary" ng-click="EditUser(user)" data-toggle="modal" data-target="#EditModal">Edit</button>
+				<button class="btn btn-danger" ng-click="deleteUser(user)">Delete</button>
+			</td>
+		</tr>
+	</table>
+
+
+	<!-- Add Modal -->
+	<div class="modal fade" id="AddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	        <h4 class="modal-title" id="myModalLabel">Add User</h4>
+	      </div>
+	      <div class="modal-body">
+	        	<form name="AddForm" id="AddForm" novalidate>
+				  <div class="form-group">
+				    <label for="forName">Name(*)</label>
+				    <input type="text" class="form-control" id="forName" name="name" ng-model="user.name" placeholder="Enter Name" required>
+				    <span style="color:red" ng-show="AddForm.name.$dirty && AddForm.name.$invalid">Name is required</span>
+				  </div>
+				  
+				  <div class="form-group">
+				    <label for="forEmail">Email(*)</label>
+				    <input type="email" class="form-control" id="forEmail" name="email" ng-model="user.email" placeholder="Enter email" required>	
+				    <span style="color:red" ng-show="AddForm.email.$dirty && AddForm.email.$invalid">Email is required with valid email</span>			    
+				  </div>
+
+				  <div class="form-group">
+				    <label for="forMobile">Mobile(*)</label>
+				    <input type="text" class="form-control" id="forMobile" name="mobile" ng-model="user.mobile" placeholder="Enter email" required>
+				    <span style="color:red" ng-show="AddForm.mobile.$dirty && AddForm.mobile.$invalid">Mobile is required</span>
+				  </div>
+				</form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button ng-disabled="AddForm.$invalid" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="AddNewUser(user)">Add</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- Add Modal -->
+
+	<!-- Edit Modal -->
+	<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	        <h4 class="modal-title" id="myModalLabel">Edit User</h4>
+	      </div>
+	      <div class="modal-body">
+	        	<form name="EditForm" novalidate>
+				  <div class="form-group">
+				    <label for="forName">Name</label>
+				    <input type="text" class="form-control" id="forName" name="name" ng-model="editedUser.name" placeholder="Enter Name" required>
+				    <span style="color:red" ng-show="EditForm.name.$dirty && EditForm.name.$invalid">Email is required with valid</span>	
+				  </div>
+				  
+				  <div class="form-group">
+				    <label for="forEmail">Email</label>
+				    <input type="email" class="form-control" id="forEmail" name="email" ng-model="editedUser.email" placeholder="Enter email" required>
+				    <span style="color:red" ng-show="EditForm.email.$dirty && EditForm.email.$invalid">Email is required with valid</span>				    
+				  </div>
+
+				  <div class="form-group">
+				    <label for="forMobile">Mobile</label>
+				    <input type="text" class="form-control" id="forMobile" name="mobile" ng-model="editedUser.mobile" placeholder="Enter email" required>
+				    <span style="color:red" ng-show="EditForm.mobile.$dirty && EditForm.mobile.$invalid">Mobile is required</span>
+				  </div>
+				</form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button ng-disabled="EditForm.$invalid" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="SaveUser(editedUser)">Update</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- Edit Modal -->
+
+</div>
+
+
+</body>
+</html>
