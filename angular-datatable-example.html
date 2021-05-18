@@ -1,0 +1,62 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://www.js-tutorials.com/demos/angularjs_datatables_export_demo/angular-datatables.min.js"></script>
+    <script src="https://www.js-tutorials.com/demos/angularjs_datatables_export_demo/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://www.js-tutorials.com/demos/angularjs_datatables_export_demo/datatables.bootstrap.css">
+    <title>Data Table Example</title>
+</head>
+<body ng-app="myApp" ng-controller="myAppController">
+<div class="container">
+    <h2>Data Table Example</h2>
+    <div class="col-sm-8">
+        <table class="table table-striped table-bordered" datatable="ng" dt-options="vm.dtOptions" dt-instance="vm.dtInstance"  width="100%" dt-column-defs="vm.dtColumnDefs">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>User</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in userList">
+                <td>{{user.name}}</td>
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+
+    angular.module('myApp', ['myApp.controllers', 'datatables']);
+
+    angular.module('myApp.controllers', []).controller('myAppController', function($scope,DTOptionsBuilder, DTColumnBuilder,DTColumnDefBuilder , $http) {
+
+        $scope.getData = function() {
+            $http.get("https://jsonplaceholder.typicode.com/users")
+                .then(function(response){
+                    $scope.userList = response.data;
+                });
+        }
+
+        $scope.getData();
+
+        $scope.vm = {};
+        $scope.vm.dtInstance = {};
+        $scope.vm.dtColumnDefs = [DTColumnDefBuilder.newColumnDef(2).notSortable()];
+        $scope.vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('paging', true)
+            .withDisplayLength(5)
+            .withOption('searching', true)
+            .withOption('info', true)
+        ;
+
+    });
+</script>
